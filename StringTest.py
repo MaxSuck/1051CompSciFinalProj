@@ -264,13 +264,13 @@ stringsSlider = tk.Scale(root, from_=1, to=10000, orient=tk.HORIZONTAL, command=
 stringsSlider.pack(padx=20, pady=5)
 labelString = tk.Label(root, text="Amount of String(s): 1")
 labelString.pack(side=tk.TOP, padx=10, pady=5)
-stringsSlider.set(500)
+stringsSlider.set(1250)
 
 stringLSlider = tk.Scale(root, from_=0, to=1000, orient=tk.HORIZONTAL, command=updateStringLength, length = 400)
 stringLSlider.pack(padx=20, pady=5)
 labelStringL = tk.Label(root, text="Min Length of String(s): 0")
 labelStringL.pack(side=tk.TOP, padx=10, pady=5)
-stringLSlider.set(150)
+stringLSlider.set(100)
 
 def toggle():
     global randomOn
