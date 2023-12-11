@@ -10,8 +10,9 @@ nails = 300 #doesn't do much but sets amount of nails across the circle
 strings = 900 #the higher the darker image will appear and usually above 500 too slow and less impact
 minStringLength = 550  #greatly affects results
 
-references = {0:"storm.jpg",1:"Bertram.jpg",2:"daub.png",3:"smiley.jpg",4:"testCircle.tif",
-              5:"your.jpg",6:"nuhuh.png",7:"fun.png",8:"jamesTest.png",9:"Rosen.jpg"}
+references = {0:"storm.jpg",1:"smiley.jpg",2:"Rosen.png",3:"your.jpg",4:"testCircle.tif",
+              5:"Bertram.jpg",6:"nuhuh.png",7:"fun.png",8:"jamesTest.png",9:"Daub.jpg",
+              10:"davis.jpg"}
 
 #don't change
 imageSize = (1000, 1000)
@@ -64,8 +65,8 @@ def nailPlacement(): #determines pixel placement of the nails arcosss the circle
     nailPlacedT = {}
 
     for i in range(nails):
-        x = max(0, min (imageSize1/2 * math.cos(2*math.pi * i / nails) + 500,999))
-        y = max(0, min (imageSize1/2 * math.sin(2*math.pi * i / nails) + 500,999))
+        x = max(0, min (imageSize1/2 * math.cos(2*math.pi * i / nails) + imageSize1/2,imageSize1-1))
+        y = max(0, min (imageSize1/2 * math.sin(2*math.pi * i / nails) + imageSize1/2,imageSize1-1))
 
         xt = imageSize1/2 * math.cos(2*math.pi * i / nails) 
         yt = imageSize1/2 * math.sin(2*math.pi * i / nails)        
@@ -118,8 +119,8 @@ def nestPixels (): # creates a *double* dictionary where the cords can be found 
 
     pixelCount = 0
 
-    for i in range(1000):
-        for j in range(1000):
+    for i in range(imageSize1):
+        for j in range(imageSize1):
             dPixel[j] = pixelList[pixelCount]
             pixelCount += 1
         ddPixelf[i] = dPixel
@@ -164,7 +165,7 @@ def drawLines(strings):
     start = 0
     
     screen = turtle.Screen()
-    screen.screensize(1000,1000)
+    screen.screensize(imageSize1,imageSize1)
     screen.tracer(0)
 
     t = turtle.Turtle()
@@ -205,15 +206,15 @@ def drawLines(strings):
 
     return img
 
-def updateImageD(imageN):
+def updateImageD(imageN): #updates Image used
     index = int(imageN)
     imageTKO = references.get(index,"blank")
     labelImage.config(text=f"{imageTKO}")
     
     currentDisplay = Image.open(references[index])
     wTK, hTK = currentDisplay.size
-    scaler = 250/hTK
-    currentD = currentDisplay.resize((int(wTK*scaler), int(hTK*scaler)))
+    scaler = 250/hTK #scales the image down to at least 250 just to look nice
+    currentD = currentDisplay.resize((int(wTK*scaler), int(hTK*scaler))) 
     new_image = ImageTk.PhotoImage(currentD)
     imageLabel.config(image=new_image)
     imageLabel.image = new_image 
@@ -221,25 +222,31 @@ def updateImageD(imageN):
     global image
     image = currentDisplay
 
-def updateNails(aNail):
+def updateNails(aNail): #updates global variable nails
     labelNails.config(text=f"Amount of Nails: {aNail}")
     global nails
     nails = int(aNail)
 
-def updateStrings(aString):
+def updateStrings(aString): #updates global variable strings
     labelString.config(text=f"Amount of String(s): {aString}")
     global strings
     strings = int(aString)
 
-def updateStringLength(lString):
-    labelStringL.config(text=f"Min Length of String(s): {lString}")
+def updateStringLength(lString): #updates global variable minStringLength
+    labelStringL.config(text=f"Min Length of String(s): {lString}% Image Size")
     global minStringLength 
-    minStringLength = int(lString)
+    minStringLength = int(lString)/100 * imageSize1
 
-root = tk.Tk()
+def updatImageSize(imgSize): #updates global variable imageSize
+    labelimageSize.config(text=f"Size of Image: {imgSize}")
+    global imageSize, imageSize1 
+    imageSize1 = int(imgSize)
+    imageSize = int(imgSize), int(imgSize)
+
+root = tk.Tk() #creates the gui screen
 root.title("String Art Settings")
 
-imaget = Image.open(references[0])
+imaget = Image.open(references[0]) 
 widthTK, heightTK = imaget.size
 scalerD = 250/heightTK
 imageTK = imaget.resize((int(widthTK*scalerD),int(heightTK*scalerD)))
@@ -249,29 +256,41 @@ imageTK = ImageTk.PhotoImage(imageTK)
 imageLabel = tk.Label(root, image=imageTK)
 imageLabel.pack()
 
+#image selection
 imageSlider = tk.Scale(root, from_=0, to=len(references)-1, orient=tk.HORIZONTAL, command=updateImageD, length = 400)
 imageSlider.pack(padx=20, pady=5)
 labelImage = tk.Label(root, text="storm.jpg")
 labelImage.pack(side=tk.TOP, padx=10, pady=5)
 
+#amount of nails slider
 nailSlider = tk.Scale(root, from_=50, to=500, orient=tk.HORIZONTAL, command=updateNails, length = 400)
 nailSlider.pack(padx=20, pady=5)
 labelNails = tk.Label(root, text="Amount of Nails: 50")
 labelNails.pack(side=tk.TOP, padx=10, pady=5)
 nailSlider.set(150)
 
+#amount of strings slider
 stringsSlider = tk.Scale(root, from_=1, to=10000, orient=tk.HORIZONTAL, command=updateStrings, length = 400)
 stringsSlider.pack(padx=20, pady=5)
 labelString = tk.Label(root, text="Amount of String(s): 1")
 labelString.pack(side=tk.TOP, padx=10, pady=5)
 stringsSlider.set(1250)
 
-stringLSlider = tk.Scale(root, from_=0, to=1000, orient=tk.HORIZONTAL, command=updateStringLength, length = 400)
+#percent of imageSize for length of min string
+stringLSlider = tk.Scale(root, from_=0, to=100, orient=tk.HORIZONTAL, command=updateStringLength, length = 400)
 stringLSlider.pack(padx=20, pady=5)
-labelStringL = tk.Label(root, text="Min Length of String(s): 0")
+labelStringL = tk.Label(root, text="Min Length of String(s): 0% Image Size")
 labelStringL.pack(side=tk.TOP, padx=10, pady=5)
-stringLSlider.set(100)
+stringLSlider.set(10)
 
+#Sets image size
+imageSizeSlider = tk.Scale(root, from_=500, to=10000, orient=tk.HORIZONTAL, command=updatImageSize, length = 400)
+imageSizeSlider.pack(padx=20, pady=5)
+labelimageSize = tk.Label(root, text="Size of Image:0")
+labelimageSize.pack(side=tk.TOP, padx=10, pady=5)
+imageSizeSlider.set(1000)
+
+#random placement toggle
 def toggle():
     global randomOn
     if swv.get():
@@ -284,6 +303,7 @@ swv = tk.BooleanVar()
 switchRan = tk.Checkbutton(root, text="Random Nail Placement", variable=swv, command=toggle)
 switchRan.pack(pady=20)
 
+#Start function sets variables that need the variables that were changed in the slider
 def commencer():
     global img, nailsD, nailsT, pixelList, ddPixel
     img = imageCircle(imageToSquare(image))
