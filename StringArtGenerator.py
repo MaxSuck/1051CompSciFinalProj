@@ -10,7 +10,7 @@ nails = 300 #doesn't do much but sets amount of nails across the circle
 strings = 900 #the higher the darker image will appear and usually above 500 too slow and less impact
 minStringLength = 550  #greatly affects results
 
-references = {0:"storm.jpg",1:"smiley.jpg",2:"Rosen.png",3:"your.jpg",4:"testCircle.tif",
+references = {0:"storm.jpg",1:"smiley.jpg",2:"Rosen.jpg",3:"your.jpg",4:"testCircle.tif",
               5:"Bertram.jpg",6:"nuhuh.png",7:"fun.png",8:"jamesTest.png",9:"Daub.jpg",
               10:"davis.jpg"}
 
@@ -156,7 +156,7 @@ def bresenhan (pointA, pointB): # bresenhan line algo, finds cords along a line 
     return coOrdinates
     
 def drawLines(strings):
-    print(nails,strings,minStringLength)
+    #print(nails,strings,minStringLength)
 
     img = Image.new("RGBA", (imageSize), "white")
     #img.putdata(pixelList)
