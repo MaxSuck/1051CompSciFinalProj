@@ -1,4 +1,4 @@
-String Art Final Project
+String Art 
 
 String art generator. Takes an image, some are already stored in a dictionary. 
 Install TKinter and Pillow, tkinter is automattacally in pyhton on macos.
